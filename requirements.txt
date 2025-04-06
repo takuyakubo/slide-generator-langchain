@@ -1,0 +1,24 @@
+# 基本的な依存関係
+langchain>=0.1.0
+langchain-core>=0.1.0
+langchain-anthropic>=0.1.0
+langchain-openai>=0.1.0
+langgraph>=0.0.10
+
+# ドキュメント処理
+pypdf>=3.17.0
+unstructured>=0.10.0
+unstructured-pytesseract>=0.3.12
+
+# データ処理
+pydantic>=2.0.0
+pandas>=2.0.0
+
+# Jupyter環境
+jupyter>=1.0.0
+jupyterlab>=4.0.0
+matplotlib>=3.7.0
+
+# その他のユーティリティ
+python-dotenv>=1.0.0
+request>=2.31.0
