@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']]
+          }
+        };
+        </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+    <title>{title}</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+        .slide {
+            width: 100%;
+            max-width: 900px;
+            min-height: 506px;
+            margin: 0 auto 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            page-break-after: always;
+            background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+        }
+        .slide-title {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #0078d7;
+            color: white;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .divider-slide {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #4b0082;
+            border-radius: 8px;
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        h2 {
+            font-size: 28px;
+            color: #0078d7;
+            margin-top: 30px;
+            border-bottom: 2px solid #0078d7;
+            padding-bottom: 5px;
+        }
+        h3 {
+            font-size: 22px;
+            color: #333;
+            margin-top: 20px;
+        }
+        ul, ol {
+            margin-left: 25px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0 3px;
+        }
+        .note {
+            background-color: #e1f5fe;
+            padding: 15px;
+            border-left: 5px solid #0078d7;
+            margin: 20px 0;
+        }
+        .two-col {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .col {
+            width: 48%;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            margin-top: 30px;
+        }
+        .key-point {
+            font-weight: bold;
+            color: #d32f2f;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .math {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+        }
+        .equation {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 18px;
+        }
+        .image-box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 15px 0;
+            text-align: center;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .image-caption {
+            font-size: 14px;
+            color: #666;
+            margin-top: 8px;
+        }
+        .definition-box {
+            background-color: #f3f8ff;
+            border: 1px solid #0078d7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 80%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Print styles */
+        @media print {
+            .slide {
+                page-break-after: always;
+                border: none;
+                box-shadow: none;
+                margin: 0;
+                padding: 0.5cm;
+                min-height: auto;
+            }
+            .slide-title {
+                border-radius: 0;
+            }
+            body {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 表紙スライド -->
+    <div class="slide">
+        <div class="slide-title">
+            <h1>{title}</h1>
+            <p>{subtitle}</p>
+        </div>
+        <div style="text-align: center; margin-top: 50px;">
+            <p style="margin-top: 80px;">{date}</p>
+        </div>
+    </div>
+
+    <!-- 目次スライド -->
+    <div class="slide">
+        <h2>目次</h2>
+        <ol>
+            {toc}
+        </ol>
+        <div class="note">
+            <p>{description}</p>
+        </div>
+    </div>
+
+    <!-- コンテンツスライド -->
+    {content_slides}
+
+    <!-- まとめスライド -->
+    <div class="slide">
+        <h2>まとめ</h2>
+        <ul>
+            {summary}
+        </ul>
+        <div class="note">
+            <p>{conclusion}</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        {footer}
+    </div>
+</body>
+</html>
