@@ -21,4 +21,4 @@ matplotlib>=3.7.0
 
 # その他のユーティリティ
 python-dotenv>=1.0.0
-request>=2.31.0
+requests>=2.31.0
