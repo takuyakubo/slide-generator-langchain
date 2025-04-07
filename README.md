@@ -93,10 +93,6 @@ slide-generator-langchain/
 - バッチ処理機能の追加
 - WebUIの開発
 
-## 📄 ライセンス
-
-MITライセンス
-
 ## 🤝 コントリビューション
 
 Issue提出やPull Requestは大歓迎です。大きな変更を加える前には、まずIssueを開いて変更内容について議論してください。
