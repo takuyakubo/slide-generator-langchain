@@ -1,48 +1,36 @@
 # 📊 Slide Generator
 
-LangChainとLangGraphを使用してPDFやHTMLドキュメントから自動的にスライドプレゼンテーションを生成するツールです。
+LangChainとLangGraphを使用して画像や文書からスライドプレゼンテーションを自動生成するツールです。
 
 ## 📋 概要
 
-このプロジェクトは、PDFやHTML形式のテキスト文書（教科書、論文、ブログ記事など）を分析し、その内容に基づいて構造化されたHTML形式のスライドプレゼンテーションを自動生成します。LangChainのドキュメント処理機能とLangGraphのワークフロー管理機能を組み合わせて、効率的かつカスタマイズ可能なパイプラインを実現します。
+このプロジェクトは、画像データや文書（PDF、HTML形式）を分析し、その内容に基づいて構造化されたHTML形式のスライドプレゼンテーションを自動生成します。LangChainのドキュメント処理機能とLangGraphのワークフロー管理機能を組み合わせて、効率的かつカスタマイズ可能なパイプラインを実現します。
 
 ## 🌟 主な機能
 
-- PDF/HTMLドキュメントの読み込みと前処理
-- 文書の構造と主要コンテンツの自動抽出
-- スライドのアウトラインと詳細コンテンツの生成
-- カスタマイズ可能なHTMLテンプレートを使用したスライド生成
-- 数式、箇条書き、引用などの適切な書式設定
-- Jupyter Notebookによる対話的な実行環境
+- **画像分析**: 画像から内容を抽出しスライド生成に活用
+- **文書処理**: PDF/HTMLドキュメントの読み込みと前処理（計画中）
+- **構造抽出**: 文書や画像の構造と主要コンテンツの自動抽出
+- **スライド生成**: アウトラインと詳細コンテンツの自動生成
+- **HTML変換**: カスタマイズ可能なHTMLテンプレートを使用したスライド生成
+- **インタラクティブ表示**: JavaScript制御によるスライド間の移動機能
 
 ## 🛠️ 前提条件
 
 - Python 3.9+
-- Jupyter Lab/Notebook
 - OpenAI API キーまたはAnthropic API キー（LLMアクセス用）
 
 ## 📦 主要な依存関係
 
 - `langchain`：ドキュメント処理および言語モデルとの統合用
 - `langgraph`：ワークフロー構築および管理用
-- `pypdf`：PDFファイル処理用
-- `unstructured`：HTML/テキスト処理用
+- `langchain-anthropic`：Anthropic Claude モデルとの連携用
 - `pydantic`：データモデリング用
-- `openai` または `anthropic`：LLMサービスとの連携用
+- `PIL`：画像処理用
 
-## 📝 ノートブック構成
+## 🚀 使用方法
 
-このリポジトリには以下のJupyter Notebookが含まれる予定です：
-
-1. `01_document_processing.ipynb` - ドキュメントの読み込みと前処理の基本
-2. `02_content_extraction.ipynb` - 文書からの構造および主要コンテンツの抽出
-3. `03_slide_generation.ipynb` - スライドアウトラインと詳細内容の生成
-4. `04_html_conversion.ipynb` - スライドコンテンツのHTML形式への変換
-5. `05_end_to_end_pipeline.ipynb` - 完全な自動化パイプラインの実装例
-
-## 🚀 使用方法（予定）
-
-### 基本的な使用手順
+### インストール
 
 1. リポジトリをクローン
    ```bash
@@ -57,40 +45,88 @@ LangChainとLangGraphを使用してPDFやHTMLドキュメントから自動的�
    pip install -r requirements.txt
    ```
 
-3. Jupyter Notebookの起動
-   ```bash
-   jupyter lab
+3. 環境変数の設定（.envファイルを作成）
+   ```
+   ANTHROPIC_API_KEY=your_api_key_here
    ```
 
-4. ノートブックを開いて対話的に実行
+### 基本的な使い方
+
+画像からスライドを生成する例:
+
+```python
+# 必要なライブラリのインポート
+import sys
+from pathlib import Path
+from dotenv import load_dotenv
+
+# .envファイルから環境変数を読み込む
+load_dotenv(override=True)
+
+# プロジェクトルートへのパスを追加
+root_dir = Path().absolute().parent
+sys.path.append(str(root_dir))
+
+from src.workflow import create_slide_generation_workflow
+
+# ワークフローアプリケーションの作成
+app = create_slide_generation_workflow()
+
+# スライド生成の実行
+result = app.invoke({
+    "images": [
+        "/path/to/your/image1.png",
+        "/path/to/your/image2.png",
+        "/path/to/your/image3.png"
+    ],
+    "instruction": "これらの画像をもとに、勉強会用のスライドを作成してください。"
+})
+
+# 生成されたHTMLの取得
+html_output = result["html_output"]
+
+# HTMLを保存
+with open("generated_slides.html", "w") as f:
+    f.write(html_output)
+```
 
 ### カスタマイズオプション
 
-- カスタムHTMLテンプレートの使用
-- スライドスタイルの選択（デフォルト、モダン、アカデミック）
-- 異なるLLMプロバイダーの選択
-- チャンクサイズと分割パラメータの調整
+- 異なるLLMプロバイダー：現在はAnthropicのClaudeモデルを使用していますが、OpenAIモデルなど他のプロバイダーも使用可能です
+- カスタムHTMLテンプレート：独自のHTMLテンプレートを使用してスライドデザインをカスタマイズできます
+- 指示の詳細化：`instruction`パラメータを詳細にすることでスライドの内容や方向性を調整できます
 
 ## 📂 プロジェクト構造
 
 ```
 slide-generator-langchain/
 │
-├── notebooks/              # Jupyter Notebooks
-├── templates/              # HTMLテンプレート
-├── examples/               # 入出力例
-├── utils/                  # ユーティリティスクリプト
+├── src/                    # ソースコード
+│   ├── workflow.py         # メインワークフローの定義
+│   ├── workflow_base.py    # ワークフローの基本クラス
+│   ├── workflow_nodes.py   # ワークフローのノード（処理ステップ）
+│   └── workflow_states.py  # ワークフローの状態管理
+│
+├── examples/               # 使用例
 ├── requirements.txt        # 依存関係
 ├── .env.example            # 環境変数のサンプル
 └── README.md               # このファイル
 ```
 
+## 🔍 処理フロー
+
+1. **画像処理（ProcessImages）**: 入力された画像を分析し、内容を抽出します
+2. **構造抽出（ExtractContentStructure）**: 画像分析と指示からスライド構造を特定します
+3. **アウトライン生成（GenerateSlideOutline）**: スライドのアウトラインを作成します
+4. **詳細化（GenerateDetailedSlides）**: 各スライドの詳細内容を生成します
+5. **HTML変換（GenerateHtmlSlides）**: 最終的なHTMLスライドを生成します
+
 ## 🔍 今後の改善点
 
-- 画像抽出と処理の追加
-- より洗練されたドキュメント構造解析
-- スライドデザインのバリエーション拡充
-- バッチ処理機能の追加
+- 複数ファイル形式のサポート（PDF、PPTXなど）
+- テキストファイルからのスライド生成
+- より洗練されたスライドデザインテンプレート
+- 画像の自動挿入と配置
 - WebUIの開発
 
 ## 🤝 コントリビューション
@@ -99,4 +135,4 @@ Issue提出やPull Requestは大歓迎です。大きな変更を加える前に
 
 ---
 
-**Note**: このプロジェクトは開発初期段階です。機能や実装が変更される可能性があります。
+**Note**: このプロジェクトは開発段階です。機能や実装が今後も拡張・変更される可能性があります。
