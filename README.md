@@ -108,6 +108,7 @@ slide-generator-langchain/
 │   └── workflow_states.py  # ワークフローの状態管理
 │
 ├── examples/               # 使用例
+├── docs/                   # ドキュメント
 ├── requirements.txt        # 依存関係
 ├── .env.example            # 環境変数のサンプル
 └── README.md               # このファイル
@@ -132,6 +133,10 @@ slide-generator-langchain/
 ## 🤝 コントリビューション
 
 Issue提出やPull Requestは大歓迎です。大きな変更を加える前には、まずIssueを開いて変更内容について議論してください。
+
+## 📖 詳細なドキュメント
+
+詳細な使用方法とAPIリファレンスは、[docs](./docs)ディレクトリを参照してください。
 
 ---
 
