@@ -1,8 +1,8 @@
-from prompts import get_process_image_prompt
-from prompts import get_extract_content_structure_prompt
-from prompts import get_generate_slide_outline_prompt
-from prompts import get_generate_detailed_slides_prompt
-from prompts import get_generate_html_slides_prompt
+from prompts import extract_content_structure_prompt
+from prompts import generate_detailed_slides_prompt
+from prompts import generate_html_slides_prompt
+from prompts import generate_slide_outline_prompt
+from prompts import process_image_prompt
 
 from utils import image_to_image_data_str
 from templates import templates
@@ -26,7 +26,7 @@ class ProcessImages(LangGraphNode[SlideGenerationState]):
         # 複数画像の処理 # TBD 並列化
         for idx, image in enumerate(images):
             img_data = image_to_image_data_str(image)
-            prompt = get_process_image_prompt(img_data, model=self.llm.model)
+            prompt = process_image_prompt[self.llm.model](img_data=img_data)
             chain = prompt | self.llm
             image_analysis = chain.invoke({})
             all_image_content.append({
@@ -50,7 +50,10 @@ class ExtractContentStructure(LangGraphNode[SlideGenerationState]):
             for item in state.image_content
         ])
         
-        prompt = get_extract_content_structure_prompt(image_analyses, state.instruction)
+        prompt = extract_content_structure_prompt[self.llm.model](
+            image_analyses=image_analyses,
+            instruction=state.instruction
+            )
         chain = prompt | self.llm
         response = chain.invoke({})
         state.content_structure = response.content
@@ -61,7 +64,7 @@ class GenerateSlideOutline(LangGraphNode[SlideGenerationState]):
 
     def proc(self, state: SlideGenerationState) -> SlideGenerationState:
         """抽出された構造からスライドアウトラインを生成"""
-        prompt = get_generate_slide_outline_prompt(state.content_structure)
+        prompt = generate_slide_outline_prompt[self.llm.model](content_structure=state.content_structure)
         chain = prompt | self.llm
         response = chain.invoke({})
         state.slide_outline = response.content
@@ -70,7 +73,7 @@ class GenerateSlideOutline(LangGraphNode[SlideGenerationState]):
 class GenerateDetailedSlides(LangGraphNode[SlideGenerationState]):
     name = "generate detailed slides"
     def proc(self, state: SlideGenerationState) -> SlideGenerationState:
-        prompt = get_generate_detailed_slides_prompt(state.slide_outline)
+        prompt = generate_detailed_slides_prompt[self.llm.model](slide_outline=state.slide_outline)
         chain = prompt | self.llm
         response = chain.invoke({})
         state.slide_presentation = response.content
@@ -82,9 +85,9 @@ class GenerateHtmlSlides(LangGraphNode[SlideGenerationState]):
         templates.check_(state.html_template)
     
     def proc(self, state: SlideGenerationState) -> SlideGenerationState:
-        prompt = get_generate_html_slides_prompt(
-            state.slide_presentation,
-            templates.content
+        prompt = generate_html_slides_prompt[self.llm.model](
+            slide_presentation=state.slide_presentation,
+            html_template=templates.content
             )
         chain = prompt | self.llm
         response = chain.invoke({})
