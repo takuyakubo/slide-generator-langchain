@@ -11,3 +11,4 @@ class SlideGenerationState(NodeState):
     slide_outline: str = Field(default="") # スライドのアウトライン
     slide_presentation: str = Field(default="") # 詳細なスライドプレゼンテーション
     html_output: str  = Field(default="")# 最終的なHTML出力
+    html_template: str = Field(default="default.html") # template htmlの名前

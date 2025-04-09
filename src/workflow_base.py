@@ -18,6 +18,7 @@ class LangGraphNode(Generic[T]):
 
     def action(self, state: T) -> T:
         try:
+            self.validate(state)
             print(f"{self.name} starts")
             state_ = self.proc(state)
             print(f"{self.name} ends")
@@ -28,6 +29,9 @@ class LangGraphNode(Generic[T]):
             )
 
     def proc(self, state: T) -> T:
+        pass
+
+    def validate(self, state: T) -> None:
         pass
 
     def generate_node(self) -> Tuple[str, Callable[[T], T]]:
