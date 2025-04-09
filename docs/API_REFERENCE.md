@@ -21,6 +21,12 @@ app = create_slide_generation_workflow()
 result = app.invoke(input_data)
 ```
 
+**現在のモデル実装**:
+```python
+llm_5000 = ChatGoogleGenerativeAI(model="gemini-2.5-pro-preview-03-25", max_tokens=5000)
+llm_50000 = ChatGoogleGenerativeAI(model="gemini-2.5-pro-preview-03-25", max_tokens=50000)
+```
+
 ## ワークフローノード
 
 各ノードはスライド生成パイプラインの一部の処理を担当します。
@@ -228,3 +234,12 @@ result = {
 ```
 
 通常、最終結果である `html_output` のみを使用します。
+
+## 今後の開発予定
+
+現在実装されているのは画像からのスライド生成機能のみです。今後、以下の機能を追加する予定です：
+
+- PDF/HTMLドキュメントからのスライド生成
+- テキストファイルからのスライド生成
+- 複数のHTMLテンプレートの選択機能
+- WebUIの開発
