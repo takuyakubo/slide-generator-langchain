@@ -23,6 +23,3 @@ def create_slide_generation_workflow():
         GenerateHtmlSlides(llm_50000)]
     wf = SequentialWorkflow(nodes, SlideGenerationState)
     return wf.get_app()
-
-# 後方互換性のためのエイリアス
-create_slide_generation_workflow_ = create_slide_generation_workflow
