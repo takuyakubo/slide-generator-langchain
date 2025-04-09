@@ -15,7 +15,7 @@
 2. 仮想環境の作成と依存関係のインストール:
    ```bash
    python -m venv venv
-   source venv/bin/activate  # Windowsの場合: venv\Scripts\activate
+   source venv/bin/activate  # Windowsの場合: venv\\Scripts\\activate
    pip install -r requirements.txt
    ```
 
@@ -23,7 +23,7 @@
    `.env.example`ファイルを`.env`としてコピーし、必要なAPI情報を追加してください。
    ```bash
    cp .env.example .env
-   # .envファイルを編集してAPIキーを設定
+   # .envファイルを編集してAPIキーを設定（現在はGoogle Gemini API用に設定してください）
    ```
 
 ## 2. 基本的な使い方
@@ -125,7 +125,7 @@ HTMLファイルは任意のウェブブラウザで開いて閲覧できます�
 
 ### 異なる言語モデルの使用
 
-デフォルトではAnthropic Claude 3.7 Sonnetモデルを使用していますが、他のモデルに変更することも可能です。
+現在の実装ではGoogle Gemini Pro Previewモデルをデフォルトで使用しています。実装を変更して、他のLLMプロバイダーを使用することも可能です。
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -146,9 +146,7 @@ def create_custom_workflow():
     return wf.get_app()
 ```
 
-### カスタムHTMLテンプレート
-
-HTMLテンプレートをカスタマイズすることで、スライドのデザインや機能を変更できます。`workflow_nodes.py`の`GenerateHtmlSlides`クラスのテンプレート部分を編集してください。
+**注意**: `workflow.py`ファイル内の実装を変更する場合は、必要に応じて適切なAPIキーを設定してください。
 
 ## 7. エラー処理
 
@@ -157,6 +155,7 @@ HTMLテンプレートをカスタマイズすることで、スライドのデ�
 1. **API認証エラー**:
    - `.env`ファイルで正しいAPIキーが設定されているか確認してください
    - APIキーの有効期限が切れていないか確認してください
+   - **現在はGoogle Gemini APIキーが必要です**
 
 2. **画像読み込みエラー**:
    - ファイルパスが正しいか確認してください
@@ -218,9 +217,17 @@ with open("enhanced_slides.html", "w", encoding="utf-8") as f:
   **解決策**: より高品質の画像を使用し、テキストが明確に読み取れることを確認
 
 - **問題**: デザインが期待通りでない
-  **解決策**: HTMLテンプレートをカスタマイズするか、生成後にCSSを編集
+  **解決策**: 生成後にCSSを編集して調整する
 
-## 10. APIリファレンス
+## 10. 今後の開発予定
+
+現在、以下の機能の実装を計画しています：
+
+- **ドキュメント処理機能**: PDF、HTMLなどの文書からのスライド生成機能
+- **テンプレート選択機能**: 複数のHTMLテンプレートから選択できる機能
+- **WebUI**: ブラウザからスライド生成を操作できるインターフェース
+
+## 11. APIリファレンス
 
 ### create_slide_generation_workflow()
 
