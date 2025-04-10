@@ -1,0 +1,3 @@
+import os
+
+LANGCHAIN_MAX_CONXURRENCY = int(os.getenv("LANGCHAIN_MAX_CONXURRENCY", 5))
