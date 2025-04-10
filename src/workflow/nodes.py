@@ -1,15 +1,11 @@
-from workflow.base import LangGraphNode
-from workflow.states import SlideGenerationState
-
-from prompts import (
-    extract_content_structure_prompt,
-    generate_detailed_slides_prompt,
-    generate_html_slides_prompt,
-    generate_slide_outline_prompt,
-    process_image_prompt,
-)
+from prompts import (extract_content_structure_prompt,
+                     generate_detailed_slides_prompt,
+                     generate_html_slides_prompt,
+                     generate_slide_outline_prompt, process_image_prompt)
 from templates import templates
 from utils import image_to_image_data_str
+from workflow.base import LangGraphNode
+from workflow.states import SlideGenerationState
 
 
 class ProcessImages(LangGraphNode[SlideGenerationState]):

@@ -1,9 +1,10 @@
+import logging
 from typing import Callable, Generic, List, Tuple, TypeVar
 
 from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
-from icecream import ic
 
+logger = logging.getLogger()
 
 class NodeState(BaseModel):
     error: str = Field(default="")  # エラーメッセージ（存在する場合）
@@ -24,11 +25,9 @@ class LangGraphNode(Generic[T]):
     def action(self, state: T) -> T:
         try:
             self.validate(state)
-            ic()
-            ic(f"{self.name} starts")
+            logger.info(f"{self.name} starts")
             state_ = self.proc(state)
-            ic()
-            ic(f"{self.name} ends")
+            logger.info(f"{self.name} ends")
             return state_
         except Exception as e:
             return state.emit_error(f"An error occured during {self.name}: {str(e)}")
