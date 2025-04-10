@@ -8,6 +8,7 @@
 import os
 import sys
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # .envファイルから環境変数を読み込む
@@ -18,6 +19,7 @@ root_dir = Path(__file__).resolve().parent.parent
 sys.path.append(str(root_dir))
 
 from src.workflow import create_slide_generation_workflow
+
 
 def generate_slides_from_images(image_paths, instruction, output_path="generated_slides.html"):
     """

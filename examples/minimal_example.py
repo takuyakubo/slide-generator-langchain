@@ -6,6 +6,7 @@
 """
 
 from dotenv import load_dotenv
+
 from src.workflow import create_slide_generation_workflow
 
 # 環境変数の読み込み

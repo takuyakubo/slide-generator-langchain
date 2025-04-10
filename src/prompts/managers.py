@@ -1,8 +1,10 @@
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.messages.base import BaseMessage
+from copy import deepcopy
 from string import Formatter
 from typing import Self
-from copy import deepcopy
+
+from langchain_core.messages.base import BaseMessage
+from langchain_core.prompts import ChatPromptTemplate
+
 
 def extract_variables_from(format_string):
     formatter = Formatter()
@@ -11,6 +13,7 @@ def extract_variables_from(format_string):
         if field_name is not None:
             variables.append(field_name)
     return variables
+
 
 def extract_vars(target, kws):
     if isinstance(target, list):
@@ -25,6 +28,7 @@ def extract_vars(target, kws):
         kws += extract_variables_from(target)
     return kws
 
+
 def assign_vars(target, kws):
     if isinstance(target, list):
         return [assign_vars(v, kws) for v in target]
@@ -33,8 +37,9 @@ def assign_vars(target, kws):
     elif isinstance(target, BaseMessage):
         return type(target)(assign_vars(target.content, kws))
     elif isinstance(target, str):
-       return target.format(**kws)
+        return target.format(**kws)
     return target
+
 
 class PromptManager:
     def __init__(self, prompt_name, description="") -> None:
@@ -55,21 +60,26 @@ class PromptManager:
             self.variables = variables
         else:
             if set(self.variables) != set(variables):
-                raise Exception("新しく設定するテンプレートは元のテンプレートと同一のformat変数を持たなくてはいけません。")
+                raise Exception(
+                    "新しく設定するテンプレートは元のテンプレートと同一のformat変数を持たなくてはいけません。"
+                )
         self.prompt_contents[key] = value
 
     def __getitem__(self, key: str) -> Self:
         key_ = self.get_item_logic(key)
         if key_ not in self.prompt_contents:
-            raise Exception(f"{self.prompt_name}に対するkeyは次のうちいずれかにして下さい: {list(self.prompt_contents.keys())}")
+            raise Exception(
+                f"{self.prompt_name}に対するkeyは次のうちいずれかにして下さい: {list(self.prompt_contents.keys())}"
+            )
         self.default_key = key_
         return self
-    
+
     def __call__(self, **kwargs):
         kws = kwargs.keys()
         if set(self.variables) != set(kws):
-            raise Exception(f"{self.prompt_name}の呼び出しは、あらかじめ決められた引数が必要です。expected: {self.variables}, actual: {kws}")
+            raise Exception(
+                f"{self.prompt_name}の呼び出しは、あらかじめ決められた引数が必要です。expected: {self.variables}, actual: {kws}"
+            )
         prompt_content = deepcopy(self.prompt_contents[self.default_key])
         prompt_content = assign_vars(prompt_content, kwargs)
         return ChatPromptTemplate(prompt_content)
-        

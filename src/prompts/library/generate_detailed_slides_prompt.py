@@ -1,10 +1,13 @@
 from langchain_core.messages import HumanMessage, SystemMessage
-from prompts.managers import PromptManager
+
 from prompts.key_logics import model_key_logic
+from prompts.managers import PromptManager
+
 generate_detailed_slides_prompt = PromptManager("generate_detailed_slides_prompt")
 content = [
-            SystemMessage(content="あなたは詳細なスライド内容を生成するアシスタントです。"),
-            HumanMessage(content="""
+    SystemMessage(content="あなたは詳細なスライド内容を生成するアシスタントです。"),
+    HumanMessage(
+        content="""
             以下のアウトラインから詳細なスライド内容を生成してください：
             
             {slide_outline}
@@ -17,8 +20,9 @@ content = [
             5. デザインの提案
             
             JSON形式で出力してください。
-            """)
-        ]
-generate_detailed_slides_prompt['gemini'] = content
-generate_detailed_slides_prompt['claude'] = content
+            """
+    ),
+]
+generate_detailed_slides_prompt["gemini"] = content
+generate_detailed_slides_prompt["claude"] = content
 generate_detailed_slides_prompt.get_item_logic = model_key_logic
