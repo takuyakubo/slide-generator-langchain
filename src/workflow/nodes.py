@@ -30,13 +30,13 @@ class ProcessImages(LangGraphNode[SlideGenerationState]):
         """複数の画像を処理して内容を抽出"""
         chain = RunnableLambda(
             lambda x: [
-                {"image_idx": idx + 1, "url": image}
+                {"image_idx": idx + 1, "file_path": image}
                 for idx, image in enumerate(x.images)
             ]
         ) | RunnableLambda(  # 画像リストを取得
             (
                 RunnablePassthrough.assign(
-                    img_data=lambda x: image_to_image_data_str(x["url"])
+                    img_data=lambda x: image_to_image_data_str(x["file_path"])
                 )
                 | RunnableParallel(
                     image_idx=lambda x: x["image_idx"],
