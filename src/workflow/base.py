@@ -31,7 +31,6 @@ class LangGraphNode(Generic[T]):
             logger.info(f"{self.name} ends")
             return state_
         except Exception as e:
-            raise e
             return state.emit_error(f"An error occured during {self.name}: {str(e)}")
 
     def proc(self, state: T) -> T:
