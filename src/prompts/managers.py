@@ -83,7 +83,3 @@ class PromptManager:
         prompt_content = deepcopy(self.prompt_contents[self.default_key])
         prompt_content = assign_vars(prompt_content, kwargs)
         return ChatPromptTemplate(prompt_content)
-
-    def invoke(self, **kwargs):
-        print(kwargs)
-        return self(**kwargs).invoke({})
