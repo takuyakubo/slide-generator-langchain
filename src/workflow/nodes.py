@@ -5,7 +5,7 @@ from langchain_core.runnables import (
     RunnablePassthrough,
 )
 
-from config import LANGCHAIN_MAX_CONXURRENCY
+from config import LANGCHAIN_MAX_CONCURRENCY
 from prompts import (
     extract_content_structure_prompt,
     generate_detailed_slides_prompt,
@@ -44,7 +44,7 @@ class ProcessImages(LangGraphNode[SlideGenerationState]):
                 )
             ).batch
         ).with_config(
-            {"max_concurrency": LANGCHAIN_MAX_CONXURRENCY}
+            {"max_concurrency": LANGCHAIN_MAX_CONCURRENCY}
         )
         state.image_content = chain.invoke(state)
         return state
