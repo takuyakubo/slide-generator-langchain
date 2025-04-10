@@ -74,12 +74,16 @@ class PromptManager:
         self.default_key = key_
         return self
 
-    def __call__(self, **kwargs):
+    def __call__(self, kwargs):
         kws = kwargs.keys()
-        if set(self.variables) != set(kws):
+        if not (set(self.variables) <= set(kws)):
             raise Exception(
                 f"{self.prompt_name}の呼び出しは、あらかじめ決められた引数が必要です。expected: {self.variables}, actual: {kws}"
             )
         prompt_content = deepcopy(self.prompt_contents[self.default_key])
         prompt_content = assign_vars(prompt_content, kwargs)
         return ChatPromptTemplate(prompt_content)
+
+    def invoke(self, **kwargs):
+        print(kwargs)
+        return self(**kwargs).invoke({})

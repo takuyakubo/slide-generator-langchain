@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 logger = logging.getLogger()
 
+
 class NodeState(BaseModel):
     error: str = Field(default="")  # エラーメッセージ（存在する場合）
 
@@ -39,9 +40,9 @@ class LangGraphNode(Generic[T]):
         pass
 
     def generate_node(self) -> Tuple[str, Callable[[T], T]]:
-        return self.node_name(), self.action
+        return self.node_name, self.action
 
-    @classmethod
+    @property
     def node_name(cls) -> str:
         return cls.name.replace(" ", "_")
 
@@ -60,9 +61,9 @@ class LangGraphConditionalEdge:
 
     def args_conditional_edge(self):
         return (
-            self.source.node_name(),
+            self.source.node_name,
             self.check_error,
-            {"error": END, "continue": self.target.node_name()},
+            {"error": END, "continue": self.target.node_name},
         )
 
 
@@ -79,12 +80,11 @@ class SequentialWorkflow:
         ]
         for e in edges:
             if e.target == END:
-                node_name = e.source.node_name()
-                self.workflow.add_edge(node_name, END)
+                self.workflow.add_edge(e.source.node_name, END)
                 continue
             self.workflow.add_node(*e.target.generate_node())
             if e.source == START:
-                self.workflow.set_entry_point(e.target.node_name())
+                self.workflow.set_entry_point(e.target.node_name)
             else:
                 self.workflow.add_conditional_edges(*e.args_conditional_edge())
 

@@ -2,9 +2,13 @@ from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 from workflow.base import SequentialWorkflow
-from workflow.nodes import (ExtractContentStructure, GenerateDetailedSlides,
-                            GenerateHtmlSlides, GenerateSlideOutline,
-                            ProcessImages)
+from workflow.nodes import (
+    ExtractContentStructure,
+    GenerateDetailedSlides,
+    GenerateHtmlSlides,
+    GenerateSlideOutline,
+    ProcessImages,
+)
 from workflow.states import SlideGenerationState
 
 
