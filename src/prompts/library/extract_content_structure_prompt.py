@@ -26,4 +26,5 @@ content = [
 ]
 extract_content_structure_prompt["gemini"] = content
 extract_content_structure_prompt["claude"] = content
+extract_content_structure_prompt["gpt"] = content
 extract_content_structure_prompt.get_item_logic = model_key_logic

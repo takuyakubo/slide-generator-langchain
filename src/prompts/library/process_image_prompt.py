@@ -8,7 +8,7 @@ direction = {
     "type": "text",
     "text": "画像の内容を詳細に分析してください。主要な要素、テキスト、構造を抽出してください。",
 }
-img = {"type": "image_url", "image_url": {"url": "data:image/jpeg;base64,{img_data}"}}
+img = {"type": "image_url", "image_url": {"url": "data:image/png;base64,{img_data}"}}
 img_ = {
     "type": "image",
     "source": {"type": "base64", "media_type": "image/png", "data": "{img_data}"},
@@ -16,5 +16,6 @@ img_ = {
 content = [HumanMessage(content=[direction, img])]
 content_ = [HumanMessage(content=[direction, img_])]
 process_image_prompt["gemini"] = content
+process_image_prompt["gpt"] = content
 process_image_prompt["claude"] = content_
 process_image_prompt.get_item_logic = model_key_logic

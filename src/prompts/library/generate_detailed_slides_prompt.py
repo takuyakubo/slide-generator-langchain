@@ -25,4 +25,5 @@ content = [
 ]
 generate_detailed_slides_prompt["gemini"] = content
 generate_detailed_slides_prompt["claude"] = content
+generate_detailed_slides_prompt["gpt"] = content
 generate_detailed_slides_prompt.get_item_logic = model_key_logic

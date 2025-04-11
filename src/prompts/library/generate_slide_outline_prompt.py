@@ -22,4 +22,5 @@ content = [
 ]
 generate_slide_outline_prompt["gemini"] = content
 generate_slide_outline_prompt["claude"] = content
+generate_slide_outline_prompt["gpt"] = content
 generate_slide_outline_prompt.get_item_logic = model_key_logic
