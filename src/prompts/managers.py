@@ -1,9 +1,12 @@
+import logging
 from copy import deepcopy
 from string import Formatter
 from typing import Self
 
 from langchain_core.messages.base import BaseMessage
 from langchain_core.prompts import ChatPromptTemplate
+
+logger = logging.getLogger(__name__)
 
 
 def extract_variables_from(format_string):
@@ -42,13 +45,14 @@ def assign_vars(target, kws):
 
 
 class PromptManager:
-    def __init__(self, prompt_name, description="") -> None:
+    def __init__(self, prompt_name, description="", use_default=True) -> None:
         self.prompt_name = prompt_name
         self.prompt_description = description
         self.prompt_contents = dict()
         self.variables = []
         self.default_key = None
         self.get_item_logic = lambda x: x
+        self.use_default = use_default
 
     def __setitem__(self, key, value) -> None:
         """
@@ -68,9 +72,15 @@ class PromptManager:
     def __getitem__(self, key: str) -> Self:
         key_ = self.get_item_logic(key)
         if key_ not in self.prompt_contents:
-            raise Exception(
-                f"{self.prompt_name}に対するkeyは次のうちいずれかにして下さい: {list(self.prompt_contents.keys())}"
-            )
+            if self.use_default:
+                logger.warning(
+                    f"{self.prompt_name}に対するkeyで想定外のものが呼び出されました。expected in: {list(self.prompt_contents.keys())}, actual: {key} -> {key_}"
+                )
+                return self
+            else:
+                raise Exception(
+                    f"{self.prompt_name}に対するkeyは次のうちいずれかにして下さい: {list(self.prompt_contents.keys())}"
+                )
         self.default_key = key_
         return self
 
