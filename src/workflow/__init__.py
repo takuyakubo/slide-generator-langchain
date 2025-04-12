@@ -1,6 +1,7 @@
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
+from langfuse.callback import CallbackHandler
 
 from workflow.base import SequentialWorkflow
 from workflow.nodes import (
@@ -11,6 +12,14 @@ from workflow.nodes import (
     ProcessImages,
 )
 from workflow.states import SlideGenerationState
+from config import LANGFUSE_HOST, LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, USE_LANGFUSE
+
+
+langfuse_handler = CallbackHandler(
+    public_key=LANGFUSE_PUBLIC_KEY,
+    secret_key=LANGFUSE_SECRET_KEY,
+    host=LANGFUSE_HOST
+)
 
 
 def create_slide_generation_workflow():
@@ -51,4 +60,7 @@ def create_slide_generation_workflow():
         GenerateHtmlSlides(llm_50000),
     ]
     wf = SequentialWorkflow(nodes, SlideGenerationState)
-    return wf.get_app()
+    app = wf.get_app()
+    if USE_LANGFUSE:
+        app = app.with_config({"callbacks": [langfuse_handler]})
+    return app
