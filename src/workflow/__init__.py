@@ -24,15 +24,15 @@ def create_slide_generation_workflow():
     Returns:
         コンパイルされたLangGraphアプリケーション
     """
-    # llm_small = ModelFactory.create("openai", model_name="gpt-4o-mini", max_tokens=5000)
-    # llm_large = ModelFactory.create("openai", model_name="gpt-4o-mini", max_tokens=16384)
-    # llm_small = ModelFactory.create("anthropic", model_name="claude-3-7-sonnet-latest", max_tokens=5000)
-    # llm_large = ModelFactory.create("anthropic", model_name="claude-3-7-sonnet-latest", max_tokens=10000)
+    # llm_small = ModelFactory.create(model_name="gpt-4o-mini", max_tokens=5000)
+    # llm_large = ModelFactory.create(model_name="gpt-4o-mini", max_tokens=16384)
+    # llm_small = ModelFactory.create(model_name="claude-3-7-sonnet-latest", max_tokens=5000)
+    # llm_large = ModelFactory.create(model_name="claude-3-7-sonnet-latest", max_tokens=10000)
     llm_small = ModelFactory.create(
-        "google", model_name="gemini-2.5-pro-preview-03-25", max_tokens=5000
+        model_name="gemini-2.5-pro-preview-03-25", max_tokens=5000
     )
     llm_large = ModelFactory.create(
-        "google", model_name="gemini-2.5-pro-preview-03-25", max_tokens=50000
+        model_name="gemini-2.5-pro-preview-03-25", max_tokens=50000
     )
     nodes = [
         ProcessImages(llm_small),
