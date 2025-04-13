@@ -4,6 +4,8 @@ from typing import Callable, Generic, List, Tuple, TypeVar
 from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
 
+from config import DEBUG_MODE
+
 logger = logging.getLogger(__name__)
 
 
@@ -31,6 +33,8 @@ class LangGraphNode(Generic[T]):
             logger.info(f"{self.name} ends")
             return state_
         except Exception as e:
+            if DEBUG_MODE:
+                raise e
             return state.emit_error(f"An error occured during {self.name}: {str(e)}")
 
     def proc(self, state: T) -> T:
