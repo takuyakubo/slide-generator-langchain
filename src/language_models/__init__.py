@@ -29,9 +29,9 @@ class ModelFactory:
     @staticmethod
     def create_unified_model_class(base_class: Type):
         # モデルクラスを動的に生成する関数
-        _unified_model_name: str = PrivateAttr(default="")
-
         class UnifiedModelClass(base_class):
+            _unified_model_name: str = PrivateAttr(default="")
+
             def __init__(self, model: str, *args, **kwargs):
                 super().__init__(model=model, *args, **kwargs)
                 self._unified_model_name = model
