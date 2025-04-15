@@ -1,6 +1,6 @@
 from langchain_core.messages import HumanMessage
 
-from prompts.key_logics import model_key_logic
+from language_models.providers import ProviderType
 from prompts.managers import PromptManager
 
 process_image_prompt = PromptManager("process_image_prompt")
@@ -15,7 +15,6 @@ img_ = {
 }
 content = [HumanMessage(content=[direction, img])]
 content_ = [HumanMessage(content=[direction, img_])]
-process_image_prompt["gemini"] = content
-process_image_prompt["gpt"] = content
-process_image_prompt["claude"] = content_
-process_image_prompt.get_item_logic = model_key_logic
+process_image_prompt[ProviderType.GOOGLE.value] = content
+process_image_prompt[ProviderType.OPENAI.value] = content
+process_image_prompt[ProviderType.ANTHROPIC.value] = content_

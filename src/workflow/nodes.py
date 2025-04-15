@@ -40,7 +40,7 @@ class ProcessImages(LangGraphNode[SlideGenerationState]):
                 )
                 | RunnableParallel(
                     image_idx=lambda x: x["image_idx"],
-                    analysis=(process_image_prompt[self.llm.model] | self.llm),
+                    analysis=(process_image_prompt[self.llm.provider_name] | self.llm),
                 )
             ).batch
         ).with_config(
@@ -73,7 +73,7 @@ class ExtractContentStructure(LangGraphNode[SlideGenerationState]):
             RunnableParallel(
                 image_analyses=concat_content, instruction=lambda x: x.instruction
             )
-            | extract_content_structure_prompt[self.llm.model]
+            | extract_content_structure_prompt[self.llm.provider_name]
             | self.llm
             | StrOutputParser()
         )
@@ -88,7 +88,7 @@ class GenerateSlideOutline(LangGraphNode[SlideGenerationState]):
         """抽出された構造からスライドアウトラインを生成"""
         chain = (
             RunnableLambda(lambda x: {"content_structure": x.content_structure})
-            | generate_slide_outline_prompt[self.llm.model]
+            | generate_slide_outline_prompt[self.llm.provider_name]
             | self.llm
             | StrOutputParser()
         )
@@ -102,7 +102,7 @@ class GenerateDetailedSlides(LangGraphNode[SlideGenerationState]):
     def proc(self, state: SlideGenerationState) -> SlideGenerationState:
         chain = (
             RunnableLambda(lambda x: {"slide_outline": x.slide_outline})
-            | generate_detailed_slides_prompt[self.llm.model]
+            | generate_detailed_slides_prompt[self.llm.provider_name]
             | self.llm
             | StrOutputParser()
         )
@@ -124,7 +124,7 @@ class GenerateHtmlSlides(LangGraphNode[SlideGenerationState]):
                     "html_template": templates.content,
                 }
             )
-            | generate_html_slides_prompt[self.llm.model]
+            | generate_html_slides_prompt[self.llm.provider_name]
             | self.llm
             | StrOutputParser()  # TBD HTMLだけを抜き出すようなParserを作った方が良い
         )

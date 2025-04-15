@@ -1,7 +1,7 @@
 from langfuse.callback import CallbackHandler
 
 from config import LANGFUSE_HOST, LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, USE_LANGFUSE
-from language_models import ModelFactory
+from language_models.factory import ModelFactory
 from workflow.base import SequentialWorkflow
 from workflow.nodes import (
     ExtractContentStructure,
@@ -13,7 +13,9 @@ from workflow.nodes import (
 from workflow.states import SlideGenerationState
 
 langfuse_handler = CallbackHandler(
-    public_key=LANGFUSE_PUBLIC_KEY, secret_key=LANGFUSE_SECRET_KEY, host=LANGFUSE_HOST
+    public_key=LANGFUSE_PUBLIC_KEY,
+    secret_key=LANGFUSE_SECRET_KEY,
+    host=LANGFUSE_HOST,
 )
 
 

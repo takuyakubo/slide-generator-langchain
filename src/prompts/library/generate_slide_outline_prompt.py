@@ -1,6 +1,6 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from prompts.key_logics import model_key_logic
+from language_models.providers import ProviderType
 from prompts.managers import PromptManager
 
 generate_slide_outline_prompt = PromptManager("generate_slide_outline_prompt")
@@ -20,7 +20,4 @@ content = [
             """
     ),
 ]
-generate_slide_outline_prompt["gemini"] = content
-generate_slide_outline_prompt["claude"] = content
-generate_slide_outline_prompt["gpt"] = content
-generate_slide_outline_prompt.get_item_logic = model_key_logic
+generate_slide_outline_prompt[ProviderType.GOOGLE.value] = content

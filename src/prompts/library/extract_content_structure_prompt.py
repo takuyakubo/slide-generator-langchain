@@ -1,6 +1,6 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from prompts.key_logics import model_key_logic
+from language_models.providers import ProviderType
 from prompts.managers import PromptManager
 
 extract_content_structure_prompt = PromptManager("extract_content_structure_prompt")
@@ -24,7 +24,4 @@ content = [
             """
     ),
 ]
-extract_content_structure_prompt["gemini"] = content
-extract_content_structure_prompt["claude"] = content
-extract_content_structure_prompt["gpt"] = content
-extract_content_structure_prompt.get_item_logic = model_key_logic
+extract_content_structure_prompt[ProviderType.GOOGLE.value] = content

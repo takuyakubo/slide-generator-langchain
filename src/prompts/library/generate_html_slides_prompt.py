@@ -1,6 +1,6 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from prompts.key_logics import model_key_logic
+from language_models.providers import ProviderType
 from prompts.managers import PromptManager
 
 generate_html_slides_prompt = PromptManager("generate_html_slides_prompt")
@@ -21,7 +21,4 @@ content = [
             """
     ),
 ]
-generate_html_slides_prompt["gemini"] = content
-generate_html_slides_prompt["claude"] = content
-generate_html_slides_prompt["gpt"] = content
-generate_html_slides_prompt.get_item_logic = model_key_logic
+generate_html_slides_prompt[ProviderType.GOOGLE.value] = content
