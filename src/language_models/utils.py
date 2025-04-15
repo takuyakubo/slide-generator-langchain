@@ -1,5 +1,6 @@
 import base64
 import io
+import mimetypes
 
 from PIL import Image
 
@@ -15,3 +16,9 @@ def image_to_image_data_str(image):
         return base64.b64encode(buffered.getvalue()).decode("utf-8")
     else:
         raise Exception(f"サポートされていない画像形式です (画像 {image})")
+
+
+def image_path_to_image_data(image_path):
+    mime_type, _ = mimetypes.guess_type(image_path)
+    image_data = image_to_image_data_str(image_path)
+    return mime_type, image_data

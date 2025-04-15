@@ -5,6 +5,7 @@ Anthropic Claude model implementation.
 from langchain_anthropic import ChatAnthropic
 
 from language_models.models import UnifiedModel
+from language_models.utils import image_path_to_image_data
 
 provider_name = "anthropic"
 
@@ -38,3 +39,11 @@ class AnthropicModel(ChatAnthropic, UnifiedModel):
         Returns the name of the model provider.
         """
         return provider_name
+
+    @staticmethod
+    def get_image_object(image_path) -> dict:
+        mime_type, image_data = image_path_to_image_data(image_path)
+        return {
+            "type": "image",
+            "source": {"type": "base64", "media_type": mime_type, "data": image_data},
+        }

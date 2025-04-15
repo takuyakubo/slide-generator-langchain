@@ -5,6 +5,7 @@ OpenAI model implementation.
 from langchain_openai import ChatOpenAI
 
 from language_models.models import UnifiedModel
+from language_models.utils import image_path_to_image_data
 
 provider_name = "openai"
 
@@ -38,3 +39,11 @@ class OpenAIModel(ChatOpenAI, UnifiedModel):
         Returns the name of the model provider.
         """
         return provider_name
+
+    @staticmethod
+    def get_image_object(image_path) -> dict:
+        mime_type, image_data = image_path_to_image_data(image_path)
+        return {
+            "type": "image_url",
+            "image_url": {"url": f"data:{mime_type};base64,{image_data}"},
+        }

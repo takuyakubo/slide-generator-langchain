@@ -14,7 +14,6 @@ from prompts import (
     process_image_prompt,
 )
 from templates import templates
-from utils import image_to_image_data_str
 from workflow.base import LangGraphNode
 from workflow.states import SlideGenerationState
 
@@ -36,7 +35,9 @@ class ProcessImages(LangGraphNode[SlideGenerationState]):
         ) | RunnableLambda(  # 画像リストを取得
             (
                 RunnablePassthrough.assign(
-                    img_data=lambda x: image_to_image_data_str(x["file_path"])
+                    _attach_img_data=lambda x: self.llm.get_image_object(
+                        x["file_path"]
+                    )  # _attach_ DSL
                 )
                 | RunnableParallel(
                     image_idx=lambda x: x["image_idx"],

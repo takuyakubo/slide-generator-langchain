@@ -23,3 +23,6 @@ class UnifiedModel(ABC):
         Returns the name of the model provider.
         """
         pass
+
+    def get_image_object(self, image_url) -> dict:
+        pass

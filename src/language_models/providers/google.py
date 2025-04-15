@@ -5,6 +5,7 @@ Google Gemini model implementation.
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 from language_models.models import UnifiedModel
+from language_models.utils import image_path_to_image_data
 
 provider_name = "google"
 
@@ -38,15 +39,11 @@ class GoogleModel(ChatGoogleGenerativeAI, UnifiedModel):
         Returns the name of the model provider.
         """
         return provider_name
-        """
-        Invokes the Google model with the given prompt.
-        
-        Args:
-            prompt: Formatted prompt messages
-            **kwargs: Additional arguments for the model
-            
-        Returns:
-            Model response as a string
-        """
-        response = self._client.invoke(prompt, **kwargs)
-        return response.content
+
+    @staticmethod
+    def get_image_object(image_path) -> dict:
+        mime_type, image_data = image_path_to_image_data(image_path)
+        return {
+            "type": "image_url",
+            "image_url": {"url": f"data:{mime_type};base64,{image_data}"},
+        }

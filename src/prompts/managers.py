@@ -3,6 +3,7 @@ from copy import deepcopy
 from string import Formatter
 from typing import Self
 
+from langchain_core.messages import HumanMessage
 from langchain_core.messages.base import BaseMessage
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -53,6 +54,9 @@ class PromptManager:
         self.default_key = None
         self.get_item_logic = lambda x: x
         self.use_default = use_default
+        self.attach_prefix = (
+            "_attach_"  # DSLで_attach_　とついたkeyには添付で対応する。
+        )
 
     def __setitem__(self, key, value) -> None:
         """
@@ -92,4 +96,23 @@ class PromptManager:
             )
         prompt_content = deepcopy(self.prompt_contents[self.default_key])
         prompt_content = assign_vars(prompt_content, kwargs)
+        attached_contents = []
+        for k in kws:
+            if k.startswith(self.attach_prefix):
+                attached_contents = self.attach(kwargs[k], attached_contents)
+        if attached_contents:
+            prompt_content += [HumanMessage(content=attached_contents)]
         return ChatPromptTemplate(prompt_content)
+
+    @staticmethod
+    def attach(image_info, content_list):
+        if isinstance(image_info, list):
+            content_list += image_info
+        elif isinstance(image_info, dict):
+            content_list += [image_info]
+        else:
+            raise ValueError("添付できるタイプはlistかdictのみです。")
+        return content_list
+
+    def append_attach_key(self, key: str):
+        self.variables += [self.attach_prefix + key]

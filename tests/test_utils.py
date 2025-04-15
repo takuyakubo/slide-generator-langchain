@@ -4,7 +4,7 @@ import os
 import pytest
 from PIL import Image
 
-from src.utils import image_to_image_data_str
+from language_models.utils import image_to_image_data_str
 
 
 def test_image_to_image_data_str_with_pil_image():
