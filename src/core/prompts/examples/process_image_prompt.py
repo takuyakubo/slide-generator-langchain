@@ -1,6 +1,5 @@
 from langchain_core.messages import HumanMessage
-
-from language_models.providers import ProviderType
+from llm.providers import ProviderType
 from prompts.managers import PromptManager
 
 process_image_prompt = PromptManager("process_image_prompt")

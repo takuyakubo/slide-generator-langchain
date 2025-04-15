@@ -1,7 +1,7 @@
 from typing import Dict, Type
 
-from language_models.models import UnifiedModel
-from language_models.providers import get_provider, model_registory
+from core.llm.models import UnifiedModel
+from core.llm.providers import get_provider, model_registory
 
 
 class ModelFactory:

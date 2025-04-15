@@ -4,8 +4,8 @@ Google Gemini model implementation.
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-from language_models.models import UnifiedModel
-from language_models.utils import image_path_to_image_data
+from core.llm.models import UnifiedModel
+from core.llm.utils import image_path_to_image_data
 
 provider_name = "google"
 

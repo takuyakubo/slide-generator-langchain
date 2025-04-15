@@ -1,11 +1,11 @@
 from enum import Enum
 
-from language_models.providers.anthropic import AnthropicModel
-from language_models.providers.anthropic import provider_name as apn
-from language_models.providers.google import GoogleModel
-from language_models.providers.google import provider_name as gpn
-from language_models.providers.openai import OpenAIModel
-from language_models.providers.openai import provider_name as opn
+from core.llm.providers.anthropic import AnthropicModel
+from core.llm.providers.anthropic import provider_name as apn
+from core.llm.providers.google import GoogleModel
+from core.llm.providers.google import provider_name as gpn
+from core.llm.providers.openai import OpenAIModel
+from core.llm.providers.openai import provider_name as opn
 
 """
 Provider-specific implementations of the unified model interface.

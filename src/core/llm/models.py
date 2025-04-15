@@ -24,5 +24,5 @@ class UnifiedModel(ABC):
         """
         pass
 
-    def get_image_object(self, image_url) -> dict:
+    def get_image_object(self, image_path) -> dict:
         pass

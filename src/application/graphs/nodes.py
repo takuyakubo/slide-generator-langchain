@@ -5,17 +5,18 @@ from langchain_core.runnables import (
     RunnablePassthrough,
 )
 
-from config import LANGCHAIN_MAX_CONCURRENCY
-from prompts import (
+from application.prompts import (
     extract_content_structure_prompt,
     generate_detailed_slides_prompt,
     generate_html_slides_prompt,
     generate_slide_outline_prompt,
     process_image_prompt,
 )
-from templates import templates
-from workflow.base import LangGraphNode
-from workflow.states import SlideGenerationState
+from application.templates import templates
+from config import LANGCHAIN_MAX_CONCURRENCY
+from core.graphs.elements import LangGraphNode
+
+from .states import SlideGenerationState
 
 
 class ProcessImages(LangGraphNode[SlideGenerationState]):

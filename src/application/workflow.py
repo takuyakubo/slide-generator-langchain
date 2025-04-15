@@ -1,16 +1,16 @@
 from langfuse.callback import CallbackHandler
 
-from config import LANGFUSE_HOST, LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, USE_LANGFUSE
-from language_models.factory import ModelFactory
-from workflow.base import SequentialWorkflow
-from workflow.nodes import (
+from application.graphs.nodes import (
     ExtractContentStructure,
     GenerateDetailedSlides,
     GenerateHtmlSlides,
     GenerateSlideOutline,
     ProcessImages,
 )
-from workflow.states import SlideGenerationState
+from application.graphs.states import SlideGenerationState
+from config import LANGFUSE_HOST, LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, USE_LANGFUSE
+from core.graphs.networks import SequentialWorkflow
+from core.llm.factory import ModelFactory
 
 langfuse_handler = CallbackHandler(
     public_key=LANGFUSE_PUBLIC_KEY,

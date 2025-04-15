@@ -1,7 +1,7 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from language_models.providers import ProviderType
-from prompts.managers import PromptManager
+from core.llm.providers import ProviderType
+from core.prompts.managers import PromptManager
 
 generate_detailed_slides_prompt = PromptManager("generate_detailed_slides_prompt")
 content = [
