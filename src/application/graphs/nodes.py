@@ -42,7 +42,7 @@ class ProcessImages(LangGraphNode[SlideGenerationState]):
                 )
                 | RunnableParallel(
                     image_idx=lambda x: x["image_idx"],
-                    analysis=(process_image_prompt[self.llm.provider_name] | self.llm),
+                    analysis=(process_image_prompt[self.llm.provider_name] | self.llm | StrOutputParser()),
                 )
             ).batch
         ).with_config(
