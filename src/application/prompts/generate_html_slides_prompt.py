@@ -7,17 +7,51 @@ generate_html_slides_prompt = PromptManager("generate_html_slides_prompt")
 content = [
     SystemMessage(content="あなたはスライドデータからHTMLを生成するアシスタントです。"),
     HumanMessage(
-        content="""
+                content="""
             以下のスライドデータからHTMLを生成してください：
             
             {slide_presentation}
             
-            以下のHTMLテンプレートを使用し、{{TITLE}}をプレゼンテーションのタイトルに、{{SLIDES}}を個々のスライドのHTMLに置き換えてください：
+            以下のHTMLテンプレートを使用してください：
             
             {html_template}
             
-            各スライドは<div class="slide">要素として生成し、タイトルは<h1 class="slide-title">、内容は<div class="slide-content">の中に配置してください。
-            出力はHTMLのみをそのままするか、文字列を入れたい場合はHTMLと分かるように```HTML ```で囲うようにして下さい。
+            テンプレートには以下の変数があり、適切に置き換えてください：
+            
+            1. {{title}} - プレゼンテーションのタイトル
+            2. {{subtitle}} - サブタイトル（あれば）
+            3. {{date}} - 発表日
+            4. {{toc}} - 目次の内容（<li>項目</li>の形式）
+            5. {{description}} - プレゼンテーションの概要
+            6. {{content_title}} - 各コンテンツセクションのタイトル
+            7. {{content}} - 各スライドの本文内容
+            8. {{summary}} - まとめの箇条書き（<li>項目</li>の形式）
+            9. {{conclusion}} - 結論部分
+            10. {{footer}} - フッター情報
+            
+            生成する際の注意点：
+            
+            1. スライドの種類に応じて適切なクラスを使用してください：
+               - 表紙スライド: slide-title クラスを使用
+               - 目次スライド: 箇条書きリスト
+               - 通常コンテンツスライド: 適切な見出しレベル(h2, h3)とコンテンツ構造
+               - まとめスライド: 箇条書きリスト
+               - 区切りスライド（必要な場合）: divider-slide クラスを使用
+            
+            2. 以下の特殊な要素に対応してください：
+               - 数式: MathJaxの構文($...$や$$...$$)を使用
+               - 表: <table>要素で適切に構造化
+               - 画像への参照: image-container, image-boxクラスを使用
+               - 重要な定義: definition-boxクラスを使用
+               - 注釈: noteクラスを使用
+               - 重要ポイント: key-pointクラスを使用
+               - 2カラムレイアウト: two-col, colクラスを使用
+            
+            3. レスポンシブデザインとプリントに対応するため、CSSクラスを適切に活用してください。
+            
+            4. 日本語のコンテンツを正しく表示するためにUTF-8エンコーディングが設定されていることを確認してください。
+            
+            最終的な出力はHTMLのみを提供し、```html```のようなマークダウン記法は使用せず、そのままのHTMLコードを出力してください。
             """
     ),
 ]
