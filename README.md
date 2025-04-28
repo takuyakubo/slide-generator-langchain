@@ -23,7 +23,10 @@ LangChainとLangGraphを使用して画像からスライドプレゼンテー�
 ## 🛠️ 前提条件
 
 - Python 3.9+
-- Google Gemini API キーまたはOpenAI API キー（LLMアクセス用）
+- 以下のいずれかのLLM APIキー:
+  - Google Gemini API キー（デフォルト）
+  - OpenAI API キー
+  - Anthropic API キー
 
 ## 📦 主要な依存関係
 
@@ -53,6 +56,9 @@ LangChainとLangGraphを使用して画像からスライドプレゼンテー�
 3. 環境変数の設定（.envファイルを作成）
    ```
    GOOGLE_API_KEY=your_api_key_here
+   # または以下を使用
+   # OPENAI_API_KEY=your_api_key_here
+   # ANTHROPIC_API_KEY=your_api_key_here
    ```
 
 ### 基本的な使い方
@@ -69,7 +75,7 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 # プロジェクトルートへのパスを追加
-root_dir = Path().absolute().parent
+root_dir = Path().absolute()
 sys.path.append(str(root_dir))
 
 from src.application.workflow import create_slide_generation_workflow
@@ -91,14 +97,25 @@ result = app.invoke({
 html_output = result["html_output"]
 
 # HTMLを保存
-with open("generated_slides.html", "w") as f:
+with open("generated_slides.html", "w", encoding="utf-8") as f:
     f.write(html_output)
 ```
 
 ### カスタマイズオプション
 
-- **異なるLLMプロバイダー**: 現在はGoogle Geminiモデルを使用していますが、OpenAIモデルやAnthropicモデルなど他のプロバイダーも使用可能です。
+- **異なるLLMプロバイダー**: 現在はGoogle Geminiモデルをデフォルトで使用していますが、OpenAIモデルやAnthropicモデルなど他のプロバイダーも使用可能です。
 - **指示の詳細化**: `instruction`パラメータを詳細にすることでスライドの内容や方向性を調整できます
+
+### ⚠️ HTMLテンプレートの利用に関する重要な制約
+
+HTMLテンプレートをカスタマイズする場合、以下の制約があります：
+
+1. テンプレート内のCSSクラス名やHTML構造を変更しないでください。これにはslide-title, note, two-col, colなどの既存のクラス名が含まれます。
+2. テンプレートに定義されていないクラスの新たな追加は禁止されています。
+3. CSSの構造やプロパティの変更は避けてください。
+4. テンプレートの基本構造（divの入れ子構造など）を維持してください。
+
+これらの制約に従わないと、スライド生成時にエラーが発生する可能性があります。
 
 ## 📂 プロジェクト構造
 
