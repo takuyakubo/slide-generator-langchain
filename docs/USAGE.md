@@ -23,8 +23,14 @@
    `.env.example`ファイルを`.env`としてコピーし、必要なAPI情報を追加してください。
    ```bash
    cp .env.example .env
-   # .envファイルを編集してAPIキーを設定（現在はGoogle Gemini API用に設定してください）
+   # .envファイルを編集してAPIキーを設定
    ```
+
+   主要な環境変数:
+   - `GOOGLE_API_KEY`: Google Gemini APIキー（デフォルト）
+   - `OPENAI_API_KEY`: OpenAI APIキー（オプション）
+   - `ANTHROPIC_API_KEY`: Anthropic APIキー（オプション）
+   - `USE_LANGFUSE`: 「True」に設定するとLangfuseによるモニタリングが有効になります
 
 ## 2. 基本的な使い方
 
@@ -34,10 +40,17 @@
 
 ```python
 from dotenv import load_dotenv
-from src.workflow import create_slide_generation_workflow
+from pathlib import Path
+import sys
 
 # 環境変数の読み込み
 load_dotenv()
+
+# プロジェクトルートへのパスを追加
+root_dir = Path().absolute()
+sys.path.append(str(root_dir))
+
+from src.application.workflow import create_slide_generation_workflow
 
 # ワークフローの作成
 app = create_slide_generation_workflow()
@@ -125,28 +138,69 @@ HTMLファイルは任意のウェブブラウザで開いて閲覧できます�
 
 ### 異なる言語モデルの使用
 
-現在の実装ではGoogle Gemini Pro Previewモデルをデフォルトで使用しています。実装を変更して、他のLLMプロバイダーを使用することも可能です。
+現在の実装ではGoogle Gemini Pro Previewモデル（gemini-2.5-pro-preview-03-25）をデフォルトで使用しています。実装を変更して、他のLLMプロバイダーを使用することも可能です。
 
 ```python
-from langchain_openai import ChatOpenAI
-from src.workflow_nodes import ProcessImages, ExtractContentStructure, GenerateSlideOutline, GenerateDetailedSlides, GenerateHtmlSlides
-from src.workflow_states import SlideGenerationState
-from src.workflow_base import SequentialWorkflow
+from pathlib import Path
+import sys
+from dotenv import load_dotenv
 
-def create_custom_workflow():
-    # OpenAIモデルを使用する例
-    llm = ChatOpenAI(model="gpt-4", temperature=0.7)
-    nodes = [
-        ProcessImages(llm),
-        ExtractContentStructure(llm),
-        GenerateSlideOutline(llm),
-        GenerateDetailedSlides(llm),
-        GenerateHtmlSlides(llm)]
-    wf = SequentialWorkflow(nodes, SlideGenerationState)
-    return wf.get_app()
+# 環境変数の読み込み
+load_dotenv()
+
+# プロジェクトルートへのパスを追加
+root_dir = Path().absolute()
+sys.path.append(str(root_dir))
+
+from langchain_openai import ChatOpenAI
+from src.core.llm.models import UnifiedModel
+from src.application.workflow import create_slide_generation_workflow_with_model
+
+# OpenAIモデルを使用する例
+llm = ChatOpenAI(model="gpt-4", temperature=0.7)
+unified_model = UnifiedModel(llm, provider_type="openai")
+
+# ワークフローの作成
+app = create_slide_generation_workflow_with_model(unified_model)
+
+# スライド生成の実行
+result = app.invoke({
+    "images": [
+        "/path/to/your/image1.png",
+        "/path/to/your/image2.png"
+    ],
+    "instruction": "これらの画像をもとに、技術解説用のスライドを作成してください。"
+})
 ```
 
-**注意**: `workflow.py`ファイル内の実装を変更する場合は、必要に応じて適切なAPIキーを設定してください。
+**注意**: 使用するLLMプロバイダーに応じて、適切なAPIキーを`.env`ファイルに設定してください。
+
+### HTMLテンプレートの選択とカスタマイズ
+
+Slide Generatorには複数のHTMLテンプレートが用意されています：
+
+- `default.html`: デフォルトのシンプルなテンプレート
+- `modern.html`: モダンなデザインのテンプレート
+
+テンプレートを変更する場合は、次のようにカスタムワークフローを作成します：
+
+```python
+from src.application.workflow import create_slide_generation_workflow_with_template
+
+# モダンテンプレートを使用したワークフローの作成
+app = create_slide_generation_workflow_with_template("modern.html")
+```
+
+⚠️ **HTMLテンプレート利用の重要な制約**:
+
+HTMLテンプレートをカスタマイズまたは新たに作成する場合、以下の点に厳密に従ってください:
+
+1. **クラス名の維持**: slide-title, note, two-col, col, definition-boxなどの既存のCSSクラス名は変更しないでください。
+2. **CSSの変更禁止**: テンプレートに定義されているCSSプロパティを変更しないでください。
+3. **新規クラスの追加禁止**: テンプレートに定義されていないクラスを新たに追加しないでください。
+4. **構造の維持**: テンプレートの基本的なHTML構造（divの入れ子構造など）を維持してください。
+
+これらの制約に従わないと、スライド生成プロセスが正しく機能しなくなる可能性があります。
 
 ## 7. エラー処理
 
@@ -155,7 +209,6 @@ def create_custom_workflow():
 1. **API認証エラー**:
    - `.env`ファイルで正しいAPIキーが設定されているか確認してください
    - APIキーの有効期限が切れていないか確認してください
-   - **現在はGoogle Gemini APIキーが必要です**
 
 2. **画像読み込みエラー**:
    - ファイルパスが正しいか確認してください
@@ -164,6 +217,10 @@ def create_custom_workflow():
 3. **メモリエラー**:
    - 大量の画像を扱う場合、メモリ制限に達する可能性があります
    - 画像数を減らすか、より低解像度の画像を使用してください
+
+4. **テンプレートエラー**:
+   - HTMLテンプレートを変更した場合、上記の制約に従っているか確認してください
+   - CSSクラス名やHTML構造を変更していないか確認してください
 
 ## 8. 高度な使用例
 
@@ -208,6 +265,8 @@ with open("enhanced_slides.html", "w", encoding="utf-8") as f:
     f.write(html_output)
 ```
 
+**注意**: HTMLを後処理する場合でも、テンプレートの基本構造とCSSクラスは維持してください。
+
 ## 9. トラブルシューティング
 
 - **問題**: スライドが生成されない、または内容が不完全
@@ -217,21 +276,52 @@ with open("enhanced_slides.html", "w", encoding="utf-8") as f:
   **解決策**: より高品質の画像を使用し、テキストが明確に読み取れることを確認
 
 - **問題**: デザインが期待通りでない
-  **解決策**: 生成後にCSSを編集して調整する
+  **解決策**: カスタムCSSを追加して調整するか、別のテンプレートを試す（ただし、基本構造を変更しないよう注意）
+
+- **問題**: テンプレートカスタマイズ後にエラーが発生する
+  **解決策**: テンプレートの基本構造とCSSクラス名を元に戻し、HTMLテンプレート制約に従う
 
 ## 10. 今後の開発予定
 
 現在、以下の機能の実装を計画しています：
 
 - **ドキュメント処理機能**: PDF、HTMLなどの文書からのスライド生成機能
-- **テンプレート選択機能**: 複数のHTMLテンプレートから選択できる機能
+- **テキストファイルからのスライド生成機能**: テキストファイルから直接スライドを生成
+- **テンプレート選択機能の拡充**: より多くのHTMLテンプレートから選択できる機能
 - **WebUI**: ブラウザからスライド生成を操作できるインターフェース
+- **Langfuseによるモニタリング機能拡充**: 詳細な生成プロセスの分析と改善
 
 ## 11. APIリファレンス
 
 ### create_slide_generation_workflow()
 
 ワークフローアプリケーションを作成します。
+
+**場所**: `src.application.workflow`
+
+**戻り値**:
+- コンパイルされたLangGraphアプリケーション
+
+### create_slide_generation_workflow_with_model(model)
+
+特定のモデルを使用してワークフローを作成します。
+
+**場所**: `src.application.workflow`
+
+**パラメータ**:
+- `model`: UnifiedModelインスタンス
+
+**戻り値**:
+- コンパイルされたLangGraphアプリケーション
+
+### create_slide_generation_workflow_with_template(template_name)
+
+指定したテンプレートを使用してワークフローを作成します。
+
+**場所**: `src.application.workflow`
+
+**パラメータ**:
+- `template_name`: テンプレート名（例: "modern.html"）
 
 **戻り値**:
 - コンパイルされたLangGraphアプリケーション
@@ -249,3 +339,5 @@ with open("enhanced_slides.html", "w", encoding="utf-8") as f:
 - 結果を含む辞書
   - `html_output`: 生成されたHTMLスライド
   - その他の中間結果（画像分析、構造、アウトラインなど）
+
+詳細なAPIリファレンスについては、[API_REFERENCE.md](API_REFERENCE.md)を参照してください。
