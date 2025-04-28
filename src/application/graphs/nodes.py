@@ -11,6 +11,7 @@ from application.prompts import (
     generate_html_slides_prompt,
     generate_slide_outline_prompt,
     process_image_prompt,
+    generate_comprehensive_slides_prompt,
 )
 from application.templates import templates
 from config import LANGCHAIN_MAX_CONCURRENCY
@@ -105,6 +106,19 @@ class GenerateDetailedSlides(LangGraphNode[SlideGenerationState]):
         chain = (
             RunnableLambda(lambda x: {"slide_outline": x.slide_outline})
             | generate_detailed_slides_prompt[self.llm.provider_name]
+            | self.llm
+            | StrOutputParser()
+        )
+        state.slide_presentation = chain.invoke(state)
+        return state
+    
+class GenerateComptehensiveSlides(LangGraphNode[SlideGenerationState]):
+    name = "generate comprehensive slides"
+
+    def proc(self, state: SlideGenerationState) -> SlideGenerationState:
+        chain = (
+            RunnableLambda(lambda x: {"content_structure": x.content_structure})
+            | generate_comprehensive_slides_prompt[self.llm.provider_name]
             | self.llm
             | StrOutputParser()
         )

@@ -5,6 +5,7 @@ from application.graphs.nodes import (
     GenerateDetailedSlides,
     GenerateHtmlSlides,
     GenerateSlideOutline,
+    GenerateComptehensiveSlides,
     ProcessImages,
 )
 from application.graphs.states import SlideGenerationState
@@ -39,8 +40,7 @@ def create_slide_generation_workflow():
     nodes = [
         ProcessImages(llm_small),
         ExtractContentStructure(llm_small),
-        GenerateSlideOutline(llm_small),
-        GenerateDetailedSlides(llm_small),
+        GenerateComptehensiveSlides(llm_large),
         GenerateHtmlSlides(llm_large),
     ]
     wf = SequentialWorkflow(nodes, SlideGenerationState)
