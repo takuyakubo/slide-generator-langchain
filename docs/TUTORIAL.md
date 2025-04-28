@@ -23,6 +23,19 @@ cp .env.example .env
 # .envファイルをエディタで開き、APIキーを設定
 ```
 
+`.env`ファイルには、使用するLLMモデルに応じて、以下のいずれかのAPIキーを設定します：
+
+```
+# Google Gemini API（デフォルト）
+GOOGLE_API_KEY=your_api_key_here
+
+# OpenAI API（オプション）
+# OPENAI_API_KEY=your_api_key_here
+
+# Anthropic API（オプション）
+# ANTHROPIC_API_KEY=your_api_key_here
+```
+
 ## ステップ2: サンプル画像の準備
 
 スライドに変換したい画像を用意します。このチュートリアルでは、以下のようなフォルダ構造を想定します：
@@ -55,7 +68,7 @@ load_dotenv()
 root_dir = Path(__file__).resolve().parent.parent
 sys.path.append(str(root_dir))
 
-from src.workflow import create_slide_generation_workflow
+from src.application.workflow import create_slide_generation_workflow
 
 def main():
     # 画像パスの設定
@@ -139,7 +152,36 @@ instruction = """
 """
 ```
 
-## ステップ5: 出力のカスタマイズ
+## ステップ5: 異なるHTMLテンプレートの使用
+
+デフォルトでは、基本的なHTMLテンプレートが使用されますが、より洗練されたデザインを持つモダンなテンプレートに切り替えることもできます。
+
+```python
+from src.application.workflow import create_slide_generation_workflow_with_template
+
+# モダンテンプレートを使用したワークフローの作成
+app = create_slide_generation_workflow_with_template("modern.html")
+
+# スライド生成の実行（以下は同じ）
+result = app.invoke({
+    "images": image_paths,
+    "instruction": instruction
+})
+
+with open("modern_slides.html", "w", encoding="utf-8") as f:
+    f.write(result["html_output"])
+```
+
+⚠️ **重要な注意**: HTMLテンプレートをカスタマイズする場合は、以下の制約を厳守してください:
+
+1. テンプレート内のCSSクラス名（slide-title, note, two-col, colなど）を変更しないでください
+2. テンプレートに定義されていない新しいクラス名を追加しないでください
+3. CSSプロパティの構造を変更しないでください
+4. テンプレートの基本的なHTML構造（divの入れ子など）を維持してください
+
+これらの制約に従わないと、生成されたスライドに問題が発生する可能性があります。
+
+## ステップ6: 出力のカスタマイズ
 
 生成されたHTMLをさらにカスタマイズする方法として、CSSの追加や基本的なJavaScriptの修正があります。以下に例を示します：
 
@@ -192,7 +234,30 @@ with open(output_path, "w", encoding="utf-8") as f:
     f.write(html_output)
 ```
 
-## ステップ6: 応用例 - ページ番号の追加
+注意: 追加のCSSはテンプレートの既存のスタイルを尊重し、クラス名を変更せずに拡張するようにしてください。
+
+## ステップ7: 異なるLLMプロバイダーの使用
+
+デフォルトではGoogle Geminiモデルが使用されますが、他のLLMプロバイダー（OpenAIやAnthropic）を使用することもできます。
+
+```python
+from src.core.llm.models import UnifiedModel
+from src.application.workflow import create_slide_generation_workflow_with_model
+from langchain_openai import ChatOpenAI  # OpenAIを使用する場合
+
+# OpenAIモデルを使用する例
+llm = ChatOpenAI(model="gpt-4", temperature=0.7)
+unified_model = UnifiedModel(llm, provider_type="openai")
+
+# カスタムモデルでワークフローを作成
+app = create_slide_generation_workflow_with_model(unified_model)
+
+# 以下は同じ（スライド生成の実行）
+```
+
+この場合、`.env`ファイルに適切なAPIキー（例：`OPENAI_API_KEY`）が設定されていることを確認してください。
+
+## ステップ8: 応用例 - ページ番号の追加
 
 スライドにページ番号を追加するカスタマイズの例です：
 
