@@ -7,11 +7,11 @@ from langchain_core.runnables import (
 
 from application.prompts import (
     extract_content_structure_prompt,
+    generate_comprehensive_slides_prompt,
     generate_detailed_slides_prompt,
     generate_html_slides_prompt,
     generate_slide_outline_prompt,
     process_image_prompt,
-    generate_comprehensive_slides_prompt,
 )
 from application.templates import templates
 from config import LANGCHAIN_MAX_CONCURRENCY
@@ -43,7 +43,11 @@ class ProcessImages(LangGraphNode[SlideGenerationState]):
                 )
                 | RunnableParallel(
                     image_idx=lambda x: x["image_idx"],
-                    analysis=(process_image_prompt[self.llm.provider_name] | self.llm | StrOutputParser()),
+                    analysis=(
+                        process_image_prompt[self.llm.provider_name]
+                        | self.llm
+                        | StrOutputParser()
+                    ),
                 )
             ).batch
         ).with_config(
@@ -111,7 +115,8 @@ class GenerateDetailedSlides(LangGraphNode[SlideGenerationState]):
         )
         state.slide_presentation = chain.invoke(state)
         return state
-    
+
+
 class GenerateComptehensiveSlides(LangGraphNode[SlideGenerationState]):
     name = "generate comprehensive slides"
 

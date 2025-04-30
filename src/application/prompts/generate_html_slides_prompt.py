@@ -7,7 +7,7 @@ generate_html_slides_prompt = PromptManager("generate_html_slides_prompt")
 content = [
     SystemMessage(content="あなたはスライドデータからHTMLを生成するアシスタントです。"),
     HumanMessage(
-                content="""
+        content="""
             以下のスライドデータからHTMLを生成してください：
             
             {slide_presentation}

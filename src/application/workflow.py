@@ -2,10 +2,8 @@ from langfuse.callback import CallbackHandler
 
 from application.graphs.nodes import (
     ExtractContentStructure,
-    GenerateDetailedSlides,
-    GenerateHtmlSlides,
-    GenerateSlideOutline,
     GenerateComptehensiveSlides,
+    GenerateHtmlSlides,
     ProcessImages,
 )
 from application.graphs.states import SlideGenerationState

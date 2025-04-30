@@ -3,9 +3,13 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from core.llm.providers import ProviderType
 from core.prompts.managers import PromptManager
 
-generate_comprehensive_slides_prompt = PromptManager("generate_comprehensive_slides_prompt")
+generate_comprehensive_slides_prompt = PromptManager(
+    "generate_comprehensive_slides_prompt"
+)
 content = [
-    SystemMessage(content="あなたは詳細なスライド内容を設計・生成するアシスタントです。"),
+    SystemMessage(
+        content="あなたは詳細なスライド内容を設計・生成するアシスタントです。"
+    ),
     HumanMessage(
         content="""
             以下の内容から詳細なスライド内容を生成してください：
