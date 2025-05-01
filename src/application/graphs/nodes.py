@@ -1,3 +1,5 @@
+import re
+
 from langchain_core.output_parsers.string import StrOutputParser
 from langchain_core.runnables import (
     RunnableLambda,
@@ -147,7 +149,12 @@ class GenerateHtmlSlides(LangGraphNode[SlideGenerationState]):
             )
             | generate_html_slides_prompt[self.llm.provider_name]
             | self.llm
-            | StrOutputParser()  # TBD HTMLだけを抜き出すようなParserを作った方が良い
+            | StrOutputParser()
+            | RunnableLambda(
+                lambda x: re.search(
+                    r"<!DOCTYPE html>.*</html>", x, flags=re.MULTILINE | re.DOTALL
+                ).group(0)
+            )
         )
         state.html_output = chain.invoke(state)
         return state
